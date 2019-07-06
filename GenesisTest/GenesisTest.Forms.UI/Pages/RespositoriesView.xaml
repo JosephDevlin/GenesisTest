@@ -1,0 +1,55 @@
+﻿<views:MvxContentPage x:TypeArguments="viewModels:RepositoriesViewModel"
+    xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
+    xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
+    xmlns:viewModels="clr-namespace:GenesisTest.Core.ViewModels;assembly=GenesisTest.Core"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:behavior="clr-namespace:GenesisTest.Forms.UI.Behaviours"
+    x:Class="GenesisTest.Forms.UI.Pages.RespositoriesView">
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <Label x:Name="label" 
+                       mvx:Bi.nd="Text LabelText" />
+            <Button x:Name="button" Text="Click to get stuff" Command="{Binding LoadRepositoriesCommand}"/>
+            <views:MvxListView 
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="FillAndExpand"
+                SelectionMode="None"
+                ItemsSource="{mvx:MvxBind GithubRepositories}"
+                IsPullToRefreshEnabled="True"
+                RefreshCommand="{mvx:MvxBind RefreshRepositoriesCommand}"
+                BackgroundColor="Transparent"
+                RowHeight="{x:OnPlatform Android=55, iOS=55, UWP=40}"
+                SeparatorVisibility="None">
+                <ListView.Behaviors>
+                    <behavior:InfiniteScroll LoadMoreCommand="{Binding LoadRepositoriesCommand}" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <views:MvxViewCell>
+                            <StackLayout
+                                Orientation="Vertical">
+                                <Label  
+                                    FontSize="Medium"
+                                    Margin="10,0,0,0"
+                                    HorizontalOptions="Start"
+                                    HorizontalTextAlignment="Start"
+                                    VerticalOptions="Center" 
+                                    VerticalTextAlignment="Center"
+                                    TextColor="Red"
+                                    FontAttributes="Bold"
+                                    mvx:Bi.nd="Text Name" />
+                                <ffimageloading:CachedImage
+                                    HeightRequest="30"
+                                    VerticalOptions="Center"
+                                    mvx:Bi.nd="Source AuthorAvatarUrl">
+                                </ffimageloading:CachedImage>
+                            </StackLayout>
+                        </views:MvxViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </views:MvxListView>
+        </StackLayout>
+    </ContentPage.Content>
+</views:MvxContentPage>

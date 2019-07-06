@@ -1,0 +1,144 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Forms.UI\\GenesisTest.Forms.UI.csproj": {}
+  },
+  "projects": {
+    "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\GenesisTest.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\GenesisTest.Core.csproj",
+        "projectName": "GenesisTest.Core",
+        "projectPath": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\GenesisTest.Core.csproj",
+        "packagesPath": "C:\\Users\\jdevlin\\.nuget\\packages\\",
+        "outputPath": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\jdevlin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "MvvmCross": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Refit": {
+              "target": "Package",
+              "version": "[4.7.9, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Forms.UI\\GenesisTest.Forms.UI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Forms.UI\\GenesisTest.Forms.UI.csproj",
+        "projectName": "GenesisTest.Forms.UI",
+        "projectPath": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Forms.UI\\GenesisTest.Forms.UI.csproj",
+        "packagesPath": "C:\\Users\\jdevlin\\.nuget\\packages\\",
+        "outputPath": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Forms.UI\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\jdevlin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {
+              "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\GenesisTest.Core.csproj": {
+                "projectPath": "C:\\Gen\\GenesisTest\\GenesisTest\\GenesisTest.Core\\GenesisTest.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "MvvmCross": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "MvvmCross.Forms": {
+              "target": "Package",
+              "version": "[6.3.1, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Xamarin.FFImageLoading.Forms": {
+              "target": "Package",
+              "version": "[2.4.11.982, )"
+            },
+            "Xamarin.Forms": {
+              "target": "Package",
+              "version": "[4.0.0.540366, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}

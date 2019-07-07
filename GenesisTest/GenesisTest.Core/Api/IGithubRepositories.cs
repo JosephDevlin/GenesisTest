@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace GenesisTest.Core.Api
 {
-    [Headers("User-Agent: JosephDevlin ")]
+    [Headers("User-Agent: JosephDevlin")]
     public interface IGithubRepositories
     {
         [Get("/search/repositories?q=language:JavaScript&sort=stars&page={pageNumber}")]
         Task<RepositoryResult> GetRepositories(int pageNumber = 1);
 
-        [Get("/repos/freeCodeCamp/freeCodeCamp/pulls")]
-        Task<List<PullRequestDto>> GetPullRequests();
+        [Get("/repos/{owner}/{repo}/pulls")]
+        Task<List<PullRequestDto>> GetPullRequests(string owner, string repo);
     }
 
     public class User

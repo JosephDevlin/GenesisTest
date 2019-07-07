@@ -7,6 +7,6 @@ namespace GenesisTest.Core.Services
     public interface IRepositoryService
     {
         Task<List<GithubRepository>> GetRepositories(int pageNumber, string username, string repositoryName);
-        Task<List<PullRequest>> GetPullRequests(string repositoryIdentifier);
+        Task<List<PullRequest>> GetPullRequests(string owner, string repository);
     }
 }

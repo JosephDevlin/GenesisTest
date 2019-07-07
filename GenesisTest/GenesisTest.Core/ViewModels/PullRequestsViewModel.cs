@@ -9,12 +9,14 @@ using Xamarin.Essentials;
 
 namespace GenesisTest.Core.ViewModels
 {
-    public class PullRequestsViewModel : MvxViewModel
+    public class PullRequestsViewModel : MvxViewModel<GithubRepository>
     {
         private readonly IRepositoryService _repositoryService;
-        private readonly IMvxNavigationService _navigationService;
         private MvxNotifyTask loadPullRequestsTask;
         private int _pageNumber = 1;
+        private string _labelText;
+        private GithubRepository _githubRepository;
+        private MvxObservableCollection<PullRequest> _githubPullRequests;
 
         public IMvxCommand LoadPullRequestsCommand { get; private set; }
         public IMvxCommand RefreshPullRequestsCommand { get; private set; }
@@ -25,7 +27,6 @@ namespace GenesisTest.Core.ViewModels
             private set => SetProperty(ref loadPullRequestsTask, value);
         }
 
-        private MvxObservableCollection<PullRequest> _githubPullRequests;
         public MvxObservableCollection<PullRequest> GithubPullRequests
         {
             get
@@ -39,9 +40,7 @@ namespace GenesisTest.Core.ViewModels
             }
         }
 
-        public MvxCommand PullRequestSelectedCommand { get; }
-
-        private string _labelText;
+        public IMvxCommand PullRequestSelectedCommand { get; }
 
         public string LabelText
         {
@@ -53,17 +52,16 @@ namespace GenesisTest.Core.ViewModels
             }
         }
 
-        public PullRequestsViewModel(IRepositoryService repositoryService, IMvxNavigationService navigationService)
+        public PullRequestsViewModel(IRepositoryService repositoryService)
         {
             _repositoryService = repositoryService;
-            _navigationService = navigationService;
 
             LabelText = "Loading";
             GithubPullRequests = new MvxObservableCollection<PullRequest>();
 
-            PullRequestSelectedCommand = new MvxCommand(async () =>
+            PullRequestSelectedCommand = new MvxCommand<PullRequest>(async (pullRequest) =>
             {
-                await Browser.OpenAsync("https://github.com/freeCodeCamp/freeCodeCamp/pull/36387", BrowserLaunchMode.SystemPreferred);
+                await Browser.OpenAsync(pullRequest.Url, BrowserLaunchMode.SystemPreferred);
             });
             RefreshPullRequestsCommand = new MvxCommand(RefreshRepositories);
             LoadPullRequestsCommand = new MvxCommand(
@@ -74,6 +72,11 @@ namespace GenesisTest.Core.ViewModels
                 });
         }
 
+        public override void Prepare(GithubRepository parameter)
+        {
+            _githubRepository = parameter;
+        }
+
         public override Task Initialize()
         {
             return base.Initialize();
@@ -81,7 +84,7 @@ namespace GenesisTest.Core.ViewModels
 
         private async Task LoadRepos()
         {
-            var data = await _repositoryService.GetPullRequests(null);
+            var data = await _repositoryService.GetPullRequests(_githubRepository.AuthorUsername, _githubRepository.Name);
 
             if (_pageNumber == 1)
             {

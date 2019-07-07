@@ -59,9 +59,9 @@ namespace GenesisTest.Core.ViewModels
             LabelText = "Loading";
             GithubRepositories = new MvxObservableCollection<GithubRepository>();
 
-            RepositorySelectedCommand = new MvxCommand(() =>
+            RepositorySelectedCommand = new MvxCommand<GithubRepository>((repo) =>
             {
-                _navigationService.Navigate<PullRequestsViewModel>();
+                _navigationService.Navigate<PullRequestsViewModel, GithubRepository>(repo);
             });
             RefreshRepositoriesCommand = new MvxCommand(RefreshRepositories);
             LoadRepositoriesCommand = new MvxCommand(

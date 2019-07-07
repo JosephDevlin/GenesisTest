@@ -45,13 +45,13 @@ namespace GenesisTest.Core.Services
             }
         }
 
-        public async Task<List<PullRequest>> GetPullRequests(string repositoryIdentifier)
+        public async Task<List<PullRequest>> GetPullRequests(string owner, string repository)
         {
             var pullRequests = new List<PullRequest>();
 
             try
             {
-                var response = await _githubRepositories.GetPullRequests();
+                var response = await _githubRepositories.GetPullRequests(owner, repository);
 
                 foreach (var pullRequest in response)
                 {
@@ -60,7 +60,8 @@ namespace GenesisTest.Core.Services
                         pullRequest.body,
                         pullRequest.user.avatar_url,
                         pullRequest.user.login,
-                        pullRequest.created_at));
+                        pullRequest.created_at,
+                        pullRequest.html_url));
                 }
                 // TODO do some caching of data
                 // TODO do some fetching/caching of the images using FF loader

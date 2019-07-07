@@ -45,9 +45,32 @@ namespace GenesisTest.Core.Services
             }
         }
 
-        public async Task<List<object>> GetPullRequests(string repositoryIdentifier)
+        public async Task<List<PullRequest>> GetPullRequests(string repositoryIdentifier)
         {
-            throw new NotImplementedException();
+            var pullRequests = new List<PullRequest>();
+
+            try
+            {
+                var response = await _githubRepositories.GetPullRequests();
+
+                foreach (var pullRequest in response)
+                {
+                    pullRequests.Add(new PullRequest(
+                        pullRequest.title,
+                        pullRequest.body,
+                        pullRequest.user.avatar_url,
+                        pullRequest.user.login,
+                        pullRequest.created_at));
+                }
+                // TODO do some caching of data
+                // TODO do some fetching/caching of the images using FF loader
+
+                return pullRequests;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

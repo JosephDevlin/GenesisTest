@@ -1,6 +1,7 @@
 ﻿using GenesisTest.Core.Models;
 using GenesisTest.Core.Services;
 using MvvmCross.Commands;
+using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using System;
 using System.Threading.Tasks;
@@ -10,11 +11,13 @@ namespace GenesisTest.Core.ViewModels
     public class RepositoriesViewModel : MvxViewModel
     {
         private readonly IRepositoryService _repositoryService;
+        private readonly IMvxNavigationService _navigationService;
         private MvxNotifyTask loadRepositoriesTask;
         private int _pageNumber = 1;
 
         public IMvxCommand LoadRepositoriesCommand { get; private set; }
         public IMvxCommand RefreshRepositoriesCommand { get; private set; }
+        public IMvxCommand RepositorySelectedCommand { get; private set; }
 
         public MvxNotifyTask LoadRepositoriesTask
         {
@@ -48,13 +51,18 @@ namespace GenesisTest.Core.ViewModels
             }
         }
 
-        public RepositoriesViewModel(IRepositoryService repositoryService)
+        public RepositoriesViewModel(IRepositoryService repositoryService, IMvxNavigationService navigationService)
         {
             _repositoryService = repositoryService;
+            _navigationService = navigationService;
 
             LabelText = "Loading";
             GithubRepositories = new MvxObservableCollection<GithubRepository>();
 
+            RepositorySelectedCommand = new MvxCommand(() =>
+            {
+                _navigationService.Navigate<PullRequestsViewModel>();
+            });
             RefreshRepositoriesCommand = new MvxCommand(RefreshRepositories);
             LoadRepositoriesCommand = new MvxCommand(
                 () =>

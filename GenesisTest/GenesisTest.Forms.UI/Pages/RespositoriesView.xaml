@@ -11,11 +11,12 @@
         <StackLayout Margin="10">
             <Label x:Name="label" 
                        mvx:Bi.nd="Text LabelText" />
-            <Button x:Name="button" Text="Click to get stuff" Command="{Binding LoadRepositoriesCommand}"/>
+            <Button x:Name="button" Text="Click to get navigate" Command="{Binding LoadRepositoriesCommand}"/>
             <views:MvxListView 
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="FillAndExpand"
                 SelectionMode="None"
+                ItemClick="{mvx:MvxBind RepositorySelectedCommand}"
                 ItemsSource="{mvx:MvxBind GithubRepositories}"
                 IsPullToRefreshEnabled="True"
                 RefreshCommand="{mvx:MvxBind RefreshRepositoriesCommand}"

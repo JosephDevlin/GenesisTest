@@ -27,7 +27,7 @@
                 RowHeight="{x:OnPlatform Android=55, iOS=55, UWP=40}"
                 SeparatorVisibility="None">
                 <ListView.Behaviors>
-                    <behavior:InfiniteScroll LoadMoreCommand="{Binding LoadPullRequestsCommand}" />
+                    <behavior:InfiniteScroll GetNextPageCommand="{Binding LoadPullRequestsCommand}" />
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

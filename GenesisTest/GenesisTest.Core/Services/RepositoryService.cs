@@ -15,13 +15,13 @@ namespace GenesisTest.Core.Services
             _githubRepositories = githubRepositories;
         }
 
-        public async Task<List<GithubRepository>> GetRepositories(int pageNumber, string username, string repositoryName)
+        public async Task<List<GithubRepository>> GetRepositories(int pageNumber, string searchString)
         {
             var repositories = new List<GithubRepository>();
 
             try
             {
-                var response = await _githubRepositories.GetRepositories(pageNumber);
+                var response = await _githubRepositories.GetRepositories(pageNumber, searchString);
 
                 foreach (var item in response.items)
                 {

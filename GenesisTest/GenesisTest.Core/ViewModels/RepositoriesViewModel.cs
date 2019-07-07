@@ -12,20 +12,22 @@ namespace GenesisTest.Core.ViewModels
     {
         private readonly IRepositoryService _repositoryService;
         private readonly IMvxNavigationService _navigationService;
-        private MvxNotifyTask loadRepositoriesTask;
+        private MvxNotifyTask _getRepositoriesTask;
         private int _pageNumber = 1;
-
-        public IMvxCommand LoadRepositoriesCommand { get; private set; }
-        public IMvxCommand RefreshRepositoriesCommand { get; private set; }
-        public IMvxCommand RepositorySelectedCommand { get; private set; }
-
-        public MvxNotifyTask LoadRepositoriesTask
-        {
-            get => loadRepositoriesTask;
-            private set => SetProperty(ref loadRepositoriesTask, value);
-        }
-
         private MvxObservableCollection<GithubRepository> _githubRepositories;
+
+        public IMvxCommand GetRepositoriesCommand { get; private set; }
+        public IMvxCommand GetNextPageCommand { get; private set; }
+        public IMvxCommand RepositorySelectedCommand { get; private set; }
+        public string SearchString { get; private set; }
+
+        private string _searchText;
+
+        public MvxNotifyTask GetRepositoriesTask
+        {
+            get => _getRepositoriesTask;
+            private set => SetProperty(ref _getRepositoriesTask, value);
+        }
         public MvxObservableCollection<GithubRepository> GithubRepositories
         {
             get
@@ -39,68 +41,56 @@ namespace GenesisTest.Core.ViewModels
             }
         }
 
-        private string _labelText;
-
-        public string LabelText
-        {
-            get => _labelText;
-            set
-            {
-                _labelText = value;
-                RaisePropertyChanged(() => LabelText);
-            }
-        }
-
         public RepositoriesViewModel(IRepositoryService repositoryService, IMvxNavigationService navigationService)
         {
             _repositoryService = repositoryService;
             _navigationService = navigationService;
 
-            LabelText = "Loading";
             GithubRepositories = new MvxObservableCollection<GithubRepository>();
+
+            GetRepositoriesCommand = new MvxCommand<string>((searchText) =>
+            {
+                _searchText = searchText;
+                GetRepositoriesTask = MvxNotifyTask.Create(RefreshRepositories, onException: ex => OnException(ex));
+                RaisePropertyChanged(() => GetRepositoriesTask);
+            });
+
+            GetNextPageCommand = new MvxCommand(() =>
+            {
+                GetRepositoriesTask = MvxNotifyTask.Create(GetRepositories, onException: ex => OnException(ex));
+                RaisePropertyChanged(() => GetRepositoriesTask);
+            });
 
             RepositorySelectedCommand = new MvxCommand<GithubRepository>((repo) =>
             {
                 _navigationService.Navigate<PullRequestsViewModel, GithubRepository>(repo);
             });
-            RefreshRepositoriesCommand = new MvxCommand(RefreshRepositories);
-            LoadRepositoriesCommand = new MvxCommand(
-                () =>
-                {
-                    LoadRepositoriesTask = MvxNotifyTask.Create(LoadRepos(), onException: ex => OnException(ex));
-                    RaisePropertyChanged(() => LoadRepositoriesTask);
-                });
         }
 
         public override Task Initialize()
         {
-            return base.Initialize();
+            GetRepositoriesTask = MvxNotifyTask.Create(RefreshRepositories, onException: ex => OnException(ex));
+            RaisePropertyChanged(() => GetRepositoriesTask);
+
+            return Task.FromResult(0);
         }
 
-        private async Task LoadRepos()
+        private async Task GetRepositories()
         {
-            var data = await _repositoryService.GetRepositories(_pageNumber ,null, null);
-
-            if(_pageNumber == 1)
-            {
-                GithubRepositories.Clear();
-            }
-
-            GithubRepositories.AddRange(data);
+            GithubRepositories.AddRange(await _repositoryService.GetRepositories(_pageNumber, _searchText));
             _pageNumber++;
         }
 
-        private void RefreshRepositories()
+        private async Task RefreshRepositories()
         {
             _pageNumber = 1;
-
-            LoadRepositoriesTask = MvxNotifyTask.Create(LoadRepos(), onException: ex => OnException(ex));
-            RaisePropertyChanged(() => LoadRepositoriesTask);
+            GithubRepositories.Clear();
+            await GetRepositories();
         }
 
         private void OnException(Exception exception)
         {
-            LabelText = "Loading failed";
+            // TODO: put a notification on the screen
         }
     }
 }

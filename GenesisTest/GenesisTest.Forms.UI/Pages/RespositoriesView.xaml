@@ -9,9 +9,15 @@
     x:Class="GenesisTest.Forms.UI.Pages.RespositoriesView">
     <ContentPage.Content>
         <StackLayout Margin="10">
-            <Label x:Name="label" 
-                       mvx:Bi.nd="Text LabelText" />
-            <Button x:Name="button" Text="Click to get navigate" Command="{Binding LoadRepositoriesCommand}"/>
+            <SearchBar
+                x:Name="SearchBar" 
+                Placeholder="Enter repository name"
+                SearchCommand="{Binding GetRepositoriesCommand}"
+                SearchCommandParameter="{Binding Text, Source={x:Reference SearchBar}}">
+                <SearchBar.Behaviors>
+                    <behavior:SearchBarCancelBehaviour />
+                </SearchBar.Behaviors>
+            </SearchBar>
             <views:MvxListView 
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="FillAndExpand"
@@ -19,12 +25,13 @@
                 ItemClick="{mvx:MvxBind RepositorySelectedCommand}"
                 ItemsSource="{mvx:MvxBind GithubRepositories}"
                 IsPullToRefreshEnabled="True"
-                RefreshCommand="{mvx:MvxBind RefreshRepositoriesCommand}"
+                RefreshCommand="{mvx:MvxBind GetRepositoriesCommand}"
                 BackgroundColor="Transparent"
                 RowHeight="{x:OnPlatform Android=55, iOS=55, UWP=40}"
+                IsRefreshing="{mvx:MvxBind GetRepositoriesTask.IsNotCompleted}"
                 SeparatorVisibility="None">
                 <ListView.Behaviors>
-                    <behavior:InfiniteScroll LoadMoreCommand="{Binding LoadRepositoriesCommand}" />
+                    <behavior:InfiniteScroll GetNextPageCommand="{Binding GetNextPageCommand}" />
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

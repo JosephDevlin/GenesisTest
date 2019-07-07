@@ -7,17 +7,17 @@ namespace GenesisTest.Forms.UI.Behaviours
 {
     public class InfiniteScroll : Behavior<ListView>
     {
-        public static readonly BindableProperty LoadMoreCommandProperty =
+        public static readonly BindableProperty GetNextPageCommandProperty =
             BindableProperty.Create(
-                nameof(LoadMoreCommand),
+                nameof(GetNextPageCommand),
                 typeof(ICommand),
                 typeof(InfiniteScroll),
                 null);
 
-        public ICommand LoadMoreCommand
+        public ICommand GetNextPageCommand
         {
-            get => (ICommand)GetValue(LoadMoreCommandProperty);
-            set => SetValue(LoadMoreCommandProperty, value);
+            get => (ICommand)GetValue(GetNextPageCommandProperty);
+            set => SetValue(GetNextPageCommandProperty, value);
         }
 
         public ListView AssociatedObject { get; private set; }
@@ -57,8 +57,8 @@ namespace GenesisTest.Forms.UI.Behaviours
             var items = AssociatedObject.ItemsSource as IList;
             if (items != null && e.Item == items[items.Count - 1])
             {
-                if (LoadMoreCommand != null && LoadMoreCommand.CanExecute(null))
-                    LoadMoreCommand.Execute(null);
+                if (GetNextPageCommand != null && GetNextPageCommand.CanExecute(null))
+                    GetNextPageCommand.Execute(null);
             }
         }
     }

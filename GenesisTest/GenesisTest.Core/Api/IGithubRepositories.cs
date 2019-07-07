@@ -9,8 +9,8 @@ namespace GenesisTest.Core.Api
     [Headers("User-Agent: JosephDevlin")]
     public interface IGithubRepositories
     {
-        [Get("/search/repositories?q=language:JavaScript&sort=stars&page={pageNumber}")]
-        Task<RepositoryResult> GetRepositories(int pageNumber = 1);
+        [Get("/search/repositories?q={searchString}+in:name+language:JavaScript&sort=stars&page={pageNumber}")]
+        Task<RepositoryResult> GetRepositories(int pageNumber = 1, string searchString = "");
 
         [Get("/repos/{owner}/{repo}/pulls")]
         Task<List<PullRequestDto>> GetPullRequests(string owner, string repo);

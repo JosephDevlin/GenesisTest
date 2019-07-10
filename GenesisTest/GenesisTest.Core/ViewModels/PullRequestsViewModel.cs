@@ -63,14 +63,6 @@ namespace GenesisTest.Core.ViewModels
             });
         }
 
-        private Func<bool> CanGetNextPage()
-        {
-            return () =>
-            {
-                return PullRequests.Count < _totalPagedCount;
-            };
-        }
-
         public override void Prepare(GithubRepository parameter)
         {
             _repository = parameter;
@@ -87,6 +79,7 @@ namespace GenesisTest.Core.ViewModels
         private async Task GetPullRequests()
         {
             var pagedResults = await _repositoryService.GetPullRequests(_pageNumber, _repository);
+
             PullRequests.AddRange(pagedResults.Results);
             _pageNumber++;
             _totalPagedCount = pagedResults.TotalCount;
@@ -103,6 +96,14 @@ namespace GenesisTest.Core.ViewModels
         private void OnException(Exception exception)
         {
             // TODO: put a notification on the screen
+        }
+
+        private Func<bool> CanGetNextPage()
+        {
+            return () =>
+            {
+                return PullRequests.Count < _totalPagedCount;
+            };
         }
     }
 }

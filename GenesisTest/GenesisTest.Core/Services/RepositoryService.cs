@@ -17,15 +17,21 @@ namespace GenesisTest.Core.Services
             _githubRepositories = githubRepositories;
         }
 
-        public async Task<List<GithubRepository>> GetRepositories(int pageNumber, string searchString)
+        public async Task<PagedResult<GithubRepository>> GetRepositories(int pageNumber, string searchString)
         {
-            var repositories = new List<GithubRepository>();
-
             try
             {
                 var response = await _githubRepositories.GetRepositories(searchString, pageNumber);
 
-                foreach (var item in response.items)
+                if (!response.IsSuccessStatusCode)
+                {
+                    //throw exception
+                }
+
+                var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
+                var repositories = new List<GithubRepository>();
+
+                foreach (var item in response.Content.items)
                 {
                     repositories.Add(new GithubRepository(
                         item.name,
@@ -36,10 +42,15 @@ namespace GenesisTest.Core.Services
                         item.forks_count,
                         item.stargazers_count));
                 }
-                // TODO do some caching of data
-                // TODO do some fetching/caching of the images using FF loader
 
-                return repositories;
+                var pagedResult = new PagedResult<GithubRepository>()
+                {
+                    Results = repositories,
+                    Next = linkHeader.NextLink,
+                    TotalCount = response.Content.total_count < 1000 ? response.Content.total_count : 999
+                };
+
+                return pagedResult;
             }
             catch (Exception)
             {
@@ -49,8 +60,6 @@ namespace GenesisTest.Core.Services
 
         public async Task<PagedResult<PullRequest>> GetPullRequests(int pageNumber, GithubRepository repository)
         {
-            var pullRequests = new List<PullRequest>();
-
             try
             {
                 var response = await _githubRepositories.GetPullRequests(repository.AuthorUsername, repository.Name, pageNumber);
@@ -62,6 +71,7 @@ namespace GenesisTest.Core.Services
 
                 var tempTotalCount = 2000;
                 var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
+                var pullRequests = new List<PullRequest>();
 
                 foreach (var pullRequest in response.Content)
                 {

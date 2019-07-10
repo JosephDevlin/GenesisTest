@@ -14,6 +14,7 @@ namespace GenesisTest.Core.ViewModels
         private readonly IMvxNavigationService _navigationService;
         private MvxNotifyTask _getRepositoriesTask;
         private int _pageNumber = 1;
+        private int _totalPagedCount = 999;
         private MvxObservableCollection<GithubRepository> _githubRepositories;
         private string _searchText;
 
@@ -58,7 +59,7 @@ namespace GenesisTest.Core.ViewModels
             {
                 GetRepositoriesTask = MvxNotifyTask.Create(GetRepositories, onException: ex => OnException(ex));
                 RaisePropertyChanged(() => GetRepositoriesTask);
-            });
+            }, CanGetNextPage());
 
             RepositorySelectedCommand = new MvxCommand<GithubRepository>((repo) =>
             {
@@ -76,8 +77,11 @@ namespace GenesisTest.Core.ViewModels
 
         private async Task GetRepositories()
         {
-            GithubRepositories.AddRange(await _repositoryService.GetRepositories(_pageNumber, _searchText));
+            var pagedResults = await _repositoryService.GetRepositories(_pageNumber, _searchText);
+
+            GithubRepositories.AddRange(pagedResults.Results);
             _pageNumber++;
+            _totalPagedCount = pagedResults.TotalCount;
         }
 
         private async Task RefreshRepositories()
@@ -90,6 +94,14 @@ namespace GenesisTest.Core.ViewModels
         private void OnException(Exception exception)
         {
             // TODO: put a notification on the screen
+        }
+
+        private Func<bool> CanGetNextPage()
+        {
+            return () =>
+            {
+                return GithubRepositories.Count < _totalPagedCount;
+            };
         }
     }
 }

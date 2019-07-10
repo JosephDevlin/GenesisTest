@@ -14,12 +14,12 @@
         <StackLayout Margin="10">
             <Label x:Name="label" 
                        mvx:Bi.nd="Text LabelText" />
-            <Button x:Name="button" Text="Click to get stuff" Command="{Binding LoadPullRequestsCommand}"/>
+            <Button x:Name="button" Text="Click to get stuff" Command="{Binding GetPullRequestsCommand}"/>
             <views:MvxListView 
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="FillAndExpand"
                 SelectionMode="None"
-                ItemsSource="{mvx:MvxBind GithubPullRequests}"
+                ItemsSource="{mvx:MvxBind PullRequests}"
                 ItemClick="{mvx:MvxBind PullRequestSelectedCommand}"
                 IsPullToRefreshEnabled="True"
                 RefreshCommand="{mvx:MvxBind RefreshPullRequestsCommand}"
@@ -27,7 +27,7 @@
                 RowHeight="{x:OnPlatform Android=55, iOS=55, UWP=40}"
                 SeparatorVisibility="None">
                 <ListView.Behaviors>
-                    <behavior:InfiniteScroll GetNextPageCommand="{Binding LoadPullRequestsCommand}" />
+                    <behavior:InfiniteScroll GetNextPageCommand="{Binding GetNextPageCommand}" />
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>

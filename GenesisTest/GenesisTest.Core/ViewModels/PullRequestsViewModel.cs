@@ -1,7 +1,6 @@
 ﻿using GenesisTest.Core.Models;
 using GenesisTest.Core.Services;
 using MvvmCross.Commands;
-using MvvmCross.Navigation;
 using MvvmCross.ViewModels;
 using System;
 using System.Threading.Tasks;
@@ -12,43 +11,31 @@ namespace GenesisTest.Core.ViewModels
     public class PullRequestsViewModel : MvxViewModel<GithubRepository>
     {
         private readonly IRepositoryService _repositoryService;
-        private MvxNotifyTask loadPullRequestsTask;
+        private MvxNotifyTask _getPullRequestsTask;
         private int _pageNumber = 1;
-        private string _labelText;
-        private GithubRepository _githubRepository;
-        private MvxObservableCollection<PullRequest> _githubPullRequests;
+        private int _totalPagedCount = 999;
+        private GithubRepository _repository;
+        private MvxObservableCollection<PullRequest> _pullRequests;
 
-        public IMvxCommand LoadPullRequestsCommand { get; private set; }
-        public IMvxCommand RefreshPullRequestsCommand { get; private set; }
+        public IMvxCommand GetPullRequestsCommand { get; private set; }
+        public IMvxCommand GetNextPageCommand { get; private set; }
+        public IMvxCommand PullRequestSelectedCommand { get; }
 
-        public MvxNotifyTask LoadPullRequestsTask
+        public MvxNotifyTask GetPullRequestsTask
         {
-            get => loadPullRequestsTask;
-            private set => SetProperty(ref loadPullRequestsTask, value);
+            get => _getPullRequestsTask;
+            private set => SetProperty(ref _getPullRequestsTask, value);
         }
-
-        public MvxObservableCollection<PullRequest> GithubPullRequests
+        public MvxObservableCollection<PullRequest> PullRequests
         {
             get
             {
-                return _githubPullRequests;
+                return _pullRequests;
             }
             set
             {
-                _githubPullRequests = value;
-                RaisePropertyChanged(() => GithubPullRequests);
-            }
-        }
-
-        public IMvxCommand PullRequestSelectedCommand { get; }
-
-        public string LabelText
-        {
-            get => _labelText;
-            set
-            {
-                _labelText = value;
-                RaisePropertyChanged(() => LabelText);
+                _pullRequests = value;
+                RaisePropertyChanged(() => PullRequests);
             }
         }
 
@@ -56,56 +43,66 @@ namespace GenesisTest.Core.ViewModels
         {
             _repositoryService = repositoryService;
 
-            LabelText = "Loading";
-            GithubPullRequests = new MvxObservableCollection<PullRequest>();
+            PullRequests = new MvxObservableCollection<PullRequest>();
+
+            GetPullRequestsCommand = new MvxCommand<string>((searchText) =>
+            {
+                GetPullRequestsTask = MvxNotifyTask.Create(RefreshPullRequests, onException: ex => OnException(ex));
+                RaisePropertyChanged(() => GetPullRequestsTask);
+            });
+
+            GetNextPageCommand = new MvxCommand(() =>
+            {
+                GetPullRequestsTask = MvxNotifyTask.Create(GetPullRequests, onException: ex => OnException(ex));
+                RaisePropertyChanged(() => GetPullRequestsTask);
+            }, CanGetNextPage());
 
             PullRequestSelectedCommand = new MvxCommand<PullRequest>(async (pullRequest) =>
             {
                 await Browser.OpenAsync(pullRequest.Url, BrowserLaunchMode.SystemPreferred);
             });
-            RefreshPullRequestsCommand = new MvxCommand(RefreshRepositories);
-            LoadPullRequestsCommand = new MvxCommand(
-                () =>
-                {
-                    LoadPullRequestsTask = MvxNotifyTask.Create(LoadRepos(), onException: ex => OnException(ex));
-                    RaisePropertyChanged(() => LoadPullRequestsTask);
-                });
+        }
+
+        private Func<bool> CanGetNextPage()
+        {
+            return () =>
+            {
+                return PullRequests.Count < _totalPagedCount;
+            };
         }
 
         public override void Prepare(GithubRepository parameter)
         {
-            _githubRepository = parameter;
+            _repository = parameter;
         }
 
         public override Task Initialize()
         {
-            return base.Initialize();
+            GetPullRequestsTask = MvxNotifyTask.Create(RefreshPullRequests, onException: ex => OnException(ex));
+            RaisePropertyChanged(() => GetPullRequestsTask);
+
+            return Task.FromResult(0);
         }
 
-        private async Task LoadRepos()
+        private async Task GetPullRequests()
         {
-            var data = await _repositoryService.GetPullRequests(_githubRepository.AuthorUsername, _githubRepository.Name);
-
-            if (_pageNumber == 1)
-            {
-                GithubPullRequests.Clear();
-            }
-
-            GithubPullRequests.AddRange(data);
+            var pagedResults = await _repositoryService.GetPullRequests(_pageNumber, _repository);
+            PullRequests.AddRange(pagedResults.Results);
             _pageNumber++;
+            _totalPagedCount = pagedResults.TotalCount;
         }
 
-        private void RefreshRepositories()
+        private async Task RefreshPullRequests()
         {
             _pageNumber = 1;
+            PullRequests.Clear();
 
-            LoadPullRequestsTask = MvxNotifyTask.Create(LoadRepos(), onException: ex => OnException(ex));
-            RaisePropertyChanged(() => LoadPullRequestsTask);
+            await GetPullRequests();
         }
 
         private void OnException(Exception exception)
         {
-            LabelText = "Loading failed";
+            // TODO: put a notification on the screen
         }
     }
 }

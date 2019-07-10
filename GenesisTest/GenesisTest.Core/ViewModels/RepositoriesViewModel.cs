@@ -15,13 +15,12 @@ namespace GenesisTest.Core.ViewModels
         private MvxNotifyTask _getRepositoriesTask;
         private int _pageNumber = 1;
         private MvxObservableCollection<GithubRepository> _githubRepositories;
+        private string _searchText;
 
         public IMvxCommand GetRepositoriesCommand { get; private set; }
         public IMvxCommand GetNextPageCommand { get; private set; }
         public IMvxCommand RepositorySelectedCommand { get; private set; }
         public string SearchString { get; private set; }
-
-        private string _searchText;
 
         public MvxNotifyTask GetRepositoriesTask
         {

@@ -30,7 +30,7 @@ namespace GenesisTest.Core.Services
                         item.description,
                         item.owner.avatar_url,
                         item.owner.login,
-                        "TODO get full name",
+                        item.full_name,
                         item.forks_count,
                         item.stargazers_count));
                 }

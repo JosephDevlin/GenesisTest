@@ -58,7 +58,7 @@
                                            HorizontalOptions="StartAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Start" />
                                         <Label LineBreakMode="TailTruncation"  TextColor="DimGray"
                                            FontSize="10" HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalOptions="Center"
-                                           mvx:Bi.nd="Text PullRequestDate" />
+                                           Text="{Binding PullRequestDate, Converter={StaticResource DateTimeToGithubDateConverter}, ConverterParameter=True}" />
                                     </StackLayout>
                                 </StackLayout>
                             </StackLayout>

@@ -24,7 +24,7 @@
                 IsRefreshing="{mvx:MvxBind GetPullRequestsTask.IsNotCompleted}"
                 BackgroundColor="Transparent"
                 RowHeight="125"
-                SeparatorVisibility="Default">
+                SeparatorVisibility="Default" SeparatorColor="DimGray">
                 <ListView.Behaviors>
                     <behavior:InfiniteScroll GetNextPageCommand="{Binding GetNextPageCommand}" />
                 </ListView.Behaviors>

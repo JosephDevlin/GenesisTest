@@ -38,6 +38,13 @@ namespace GenesisTest.Core.ViewModels
                 RaisePropertyChanged(() => PullRequests);
             }
         }
+        public string RepositoryName
+        {
+            get
+            {
+                return _repository.Name;
+            }
+        }
 
         public PullRequestsViewModel(IRepositoryService repositoryService)
         {

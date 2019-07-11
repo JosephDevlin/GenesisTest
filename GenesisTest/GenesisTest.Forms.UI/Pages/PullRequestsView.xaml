@@ -6,15 +6,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:MvvmCross.Forms.Views;assembly=MvvmCross.Forms"
              xmlns:viewModels="clr-namespace:GenesisTest.Core.ViewModels;assembly=GenesisTest.Core"
+             xmlns:ffimageloadingsvg="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
              xmlns:behavior="clr-namespace:GenesisTest.Forms.UI.Behaviours"
              xmlns:mvx="clr-namespace:MvvmCross.Forms.Bindings;assembly=MvvmCross.Forms"
              mc:Ignorable="d"
              x:Class="GenesisTest.Forms.UI.Pages.PullRequestsView">
     <ContentPage.Content>
         <StackLayout Margin="10">
-            <Label x:Name="label" 
-                       mvx:Bi.nd="Text LabelText" />
-            <Button x:Name="button" Text="Click to get stuff" Command="{Binding GetPullRequestsCommand}"/>
             <views:MvxListView 
                 HorizontalOptions="FillAndExpand" 
                 VerticalOptions="FillAndExpand"
@@ -23,27 +21,46 @@
                 ItemClick="{mvx:MvxBind PullRequestSelectedCommand}"
                 IsPullToRefreshEnabled="True"
                 RefreshCommand="{mvx:MvxBind RefreshPullRequestsCommand}"
+                IsRefreshing="{mvx:MvxBind GetPullRequestsTask.IsNotCompleted}"
                 BackgroundColor="Transparent"
-                RowHeight="{x:OnPlatform Android=55, iOS=55, UWP=40}"
-                SeparatorVisibility="None">
+                RowHeight="125"
+                SeparatorVisibility="Default">
                 <ListView.Behaviors>
                     <behavior:InfiniteScroll GetNextPageCommand="{Binding GetNextPageCommand}" />
                 </ListView.Behaviors>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <views:MvxViewCell>
-                            <StackLayout
-                                Orientation="Vertical">
-                                <Label  
-                                    FontSize="Medium"
-                                    Margin="10,0,0,0"
+                            <StackLayout VerticalOptions="FillAndExpand" Margin="5" Padding="5">
+                                <Label
+                                    VerticalOptions="StartAndExpand" 
+                                    LineBreakMode="TailTruncation"
+                                    HorizontalOptions="Start"
+                                    mvx:Bi.nd="Text Title" TextColor="#ff318CE7"
+                                    FontSize="20"
+                                    HorizontalTextAlignment="Start"/>
+                                <Label
+                                    VerticalOptions="Fill" 
                                     HorizontalOptions="Start"
                                     HorizontalTextAlignment="Start"
-                                    VerticalOptions="Center" 
-                                    VerticalTextAlignment="Center"
-                                    TextColor="Red"
-                                    FontAttributes="Bold"
-                                    mvx:Bi.nd="Text Title" />
+                                    mvx:Bi.nd="Text Description"
+                                    FontSize="12" TextColor="DimGray"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="2" />
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand">
+                                    <ffimageloadingsvg:SvgCachedImage
+                                        HeightRequest="30"
+                                        mvx:Bi.nd="Source AuthorAvatarUrl"
+                                        VerticalOptions="Center" ErrorPlaceholder="person.svg" LoadingPlaceholder="person.svg"/>
+                                    <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand" VerticalOptions="EndAndExpand" Spacing="2">
+                                        <Label LineBreakMode="TailTruncation" 
+                                           TextColor="#ff318CE7" FontSize="14" mvx:Bi.nd="Text AuthorUsername"
+                                           HorizontalOptions="StartAndExpand" VerticalOptions="Center" HorizontalTextAlignment="Start" />
+                                        <Label LineBreakMode="TailTruncation"  TextColor="DimGray"
+                                           FontSize="10" HorizontalOptions="StartAndExpand" HorizontalTextAlignment="Start" VerticalOptions="Center"
+                                           mvx:Bi.nd="Text PullRequestDate" />
+                                    </StackLayout>
+                                </StackLayout>
                             </StackLayout>
                         </views:MvxViewCell>
                     </DataTemplate>

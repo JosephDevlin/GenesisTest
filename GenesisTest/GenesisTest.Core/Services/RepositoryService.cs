@@ -28,7 +28,6 @@ namespace GenesisTest.Core.Services
                     //throw exception
                 }
 
-                var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
                 var repositories = new List<GithubRepository>();
 
                 foreach (var item in response.Content.items)
@@ -46,7 +45,6 @@ namespace GenesisTest.Core.Services
                 var pagedResult = new PagedResult<GithubRepository>()
                 {
                     Results = repositories,
-                    Next = linkHeader.NextLink,
                     TotalCount = response.Content.total_count < 1000 ? response.Content.total_count : 999
                 };
 
@@ -70,7 +68,7 @@ namespace GenesisTest.Core.Services
                 }
 
                 var tempTotalCount = 2000;
-                var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
+                //var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
                 var pullRequests = new List<PullRequest>();
 
                 foreach (var pullRequest in response.Content)
@@ -87,13 +85,12 @@ namespace GenesisTest.Core.Services
                 var pagedResult = new PagedResult<PullRequest>()
                 {
                     Results = pullRequests,
-                    Next = linkHeader.NextLink,
                     TotalCount = tempTotalCount < 1000 ? tempTotalCount : 999
                 };
 
                 return pagedResult;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

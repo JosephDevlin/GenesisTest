@@ -16,6 +16,8 @@ namespace GenesisTest.Core.ViewModels
         private int _totalPagedCount = 999;
         private GithubRepository _repository;
         private MvxObservableCollection<PullRequest> _pullRequests;
+        private int _openPrCount;
+        private int _closedPrCount;
 
         public IMvxCommand GetPullRequestsCommand { get; private set; }
         public IMvxCommand GetNextPageCommand { get; private set; }
@@ -43,6 +45,32 @@ namespace GenesisTest.Core.ViewModels
             get
             {
                 return _repository.Name;
+            }
+        }
+
+        public int OpenPrCount
+        {
+            get
+            {
+                return _openPrCount;
+            }
+            set
+            {
+                _openPrCount = value;
+                RaisePropertyChanged(() => OpenPrCount);
+            }
+        }
+
+        public int ClosedPrCount
+        {
+            get
+            {
+                return _closedPrCount;
+            }
+            set
+            {
+                _closedPrCount = value;
+                RaisePropertyChanged(() => ClosedPrCount);
             }
         }
 
@@ -88,8 +116,10 @@ namespace GenesisTest.Core.ViewModels
             var pagedResults = await _repositoryService.GetPullRequests(_pageNumber, _repository);
 
             PullRequests.AddRange(pagedResults.Results);
-            _pageNumber++;
+            OpenPrCount = pagedResults.TotalOpen;
+            ClosedPrCount = pagedResults.TotalClosed;
             _totalPagedCount = pagedResults.TotalCount;
+            _pageNumber++;
         }
 
         private async Task RefreshPullRequests()
@@ -109,7 +139,7 @@ namespace GenesisTest.Core.ViewModels
         {
             return () =>
             {
-                return PullRequests.Count < _totalPagedCount;
+                return PullRequests.Count < _totalPagedCount && PullRequests.Count < 999;
             };
         }
     }

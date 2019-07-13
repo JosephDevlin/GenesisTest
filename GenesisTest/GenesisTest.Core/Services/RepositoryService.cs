@@ -4,6 +4,7 @@ using GenesisTest.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GenesisTest.Core.Services
@@ -56,19 +57,28 @@ namespace GenesisTest.Core.Services
             }
         }
 
-        public async Task<PagedResult<PullRequest>> GetPullRequests(int pageNumber, GithubRepository repository)
+        public async Task<PullRequestPagedResult> GetPullRequests(int pageNumber, GithubRepository repository)
         {
             try
             {
+                // get the first item from each repository state type we are interested in so we can get the paging headers.
+                var firstOpenPr = _githubRepositories.GetFirstOpenPullRequest(repository.AuthorUsername, repository.Name);
+                var firstClosedPr = _githubRepositories.GetFirstClosedPullRequest(repository.AuthorUsername, repository.Name);
+                var firstPr = _githubRepositories.GetPullRequests(repository.AuthorUsername, repository.Name, 1, 1); // I think summing open and closed will give me the total but i need to read the docs to confirm
+
+                // get paged pull requests
                 var response = await _githubRepositories.GetPullRequests(repository.AuthorUsername, repository.Name, pageNumber);
+
+                // use the 'last' paging header to determine the total count of each type
+                var openPrCount = GetPageCountFromResponse(await firstOpenPr);
+                var closedPrCount = GetPageCountFromResponse(await firstClosedPr);
+                var totalPrCount = GetPageCountFromResponse(await firstPr);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     //throw exception
                 }
 
-                var tempTotalCount = 2000;
-                //var linkHeader = new LinkHeader(response.Headers.GetValues("Link").First()); //use the Last header to calculate the total amount of PRs
                 var pullRequests = new List<PullRequest>();
 
                 foreach (var pullRequest in response.Content)
@@ -82,10 +92,12 @@ namespace GenesisTest.Core.Services
                         pullRequest.html_url));
                 }
 
-                var pagedResult = new PagedResult<PullRequest>()
+                var pagedResult = new PullRequestPagedResult()
                 {
                     Results = pullRequests,
-                    TotalCount = tempTotalCount < 1000 ? tempTotalCount : 999
+                    TotalCount = totalPrCount,
+                    TotalOpen = openPrCount,
+                    TotalClosed = closedPrCount
                 };
 
                 return pagedResult;
@@ -93,6 +105,25 @@ namespace GenesisTest.Core.Services
             catch (Exception ex)
             {
                 throw;
+            }
+        }
+
+        private static int GetPageCountFromResponse(Refit.ApiResponse<List<Api.PullRequestModels.PullRequestDto>> response)
+        {
+            var linkHeader = response.Headers.GetValues("Link").First();
+            var links = linkHeader.Split(',');
+            var lastPageLink = links.FirstOrDefault(x => x.Contains("last"));
+
+            if (lastPageLink != null)
+            {
+                var match = Regex.Match(lastPageLink, "[^_](?:page=)[0-9]+", RegexOptions.IgnoreCase);
+                int.TryParse(match.Captures[0].Value.Substring(6), out int pageCount);
+
+                return pageCount;
+            }
+            else
+            {
+                return 0;
             }
         }
     }

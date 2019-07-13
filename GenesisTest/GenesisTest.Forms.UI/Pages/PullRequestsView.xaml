@@ -17,8 +17,11 @@
                 <RowDefinition Height="60" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackLayout Grid.Row="0" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <Label Text="16 opened / 800 closed" FontSize="16" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand"/>
+            <StackLayout Grid.Row="0" BackgroundColor="LightGray" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Orientation="Horizontal">
+                <Label Text="{Binding OpenPrCount, Converter={StaticResource IntToOpenPullRequestsString}, ConverterParameter=True}"  Margin="15,0,0,0"
+                       FontSize="16" VerticalOptions="CenterAndExpand" HorizontalOptions="Start" TextColor="Goldenrod" FontAttributes="Bold"/>
+                <Label Text="{Binding ClosedPrCount, Converter={StaticResource IntToClosedPullRequestsString}, ConverterParameter=True}"
+                       FontSize="16" VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" TextColor="Black" FontAttributes="Bold"/>
             </StackLayout>
             <views:MvxListView Margin="5,0" Grid.Row="1"
                 HorizontalOptions="FillAndExpand" 

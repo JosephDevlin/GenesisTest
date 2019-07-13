@@ -6,6 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <converters:DateTimeToGithubDateConverter x:Key="DateTimeToGithubDateConverter"></converters:DateTimeToGithubDateConverter>
+            <converters:IntToOpenPullRequestsString x:Key="IntToOpenPullRequestsString"></converters:IntToOpenPullRequestsString>
+            <converters:IntToClosedPullRequestsString x:Key="IntToClosedPullRequestsString"></converters:IntToClosedPullRequestsString>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

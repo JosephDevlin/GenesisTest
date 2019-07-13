@@ -23,3 +23,4 @@ BUGS
 - When getting the repositories some of the most popular items are missing from the first page
 - When PR screen is loading it should hide open/closed summary with loading indicator too
 - Stars count too far to the right when in landscape mode
+- Duplicate items appearing on list when paging

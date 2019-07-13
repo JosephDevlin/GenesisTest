@@ -100,7 +100,7 @@ namespace GenesisTest.Core.ViewModels
         {
             return () =>
             {
-                return GithubRepositories.Count < _totalPagedCount;
+                return GithubRepositories.Count < _totalPagedCount && GithubRepositories.Count < 999;
             };
         }
     }

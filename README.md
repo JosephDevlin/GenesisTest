@@ -12,10 +12,11 @@ TODO
 - Add docs
 - Revise project structure and codebase
 - Add Unit Tests
-- Implement local cache
+- Implement local cache in case app goes offline or activities are dumped etc (prob use local file as sql may be overkill for take home test)
 - Cancel get pull requests task if user navigates back
 - Adjust the stars count on repository item cell template so that it looks better in landscape
 - Review linker to see if we can make the app smaller
+- Display an error/toast on the screen if an error happen getting the data
 
 BUGS
 

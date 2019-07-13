@@ -22,7 +22,9 @@ namespace GenesisTest.Core.Services
         {
             try
             {
+                var firstRepository = _githubRepositories.GetRepositories(searchString, 1, 1); // I think summing open and closed will give me the total but i need to read the docs to confirm
                 var response = await _githubRepositories.GetRepositories(searchString, pageNumber);
+                var totalRepositories = GetPageCountFromResponse(await firstRepository);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -46,7 +48,7 @@ namespace GenesisTest.Core.Services
                 var pagedResult = new PagedResult<GithubRepository>()
                 {
                     Results = repositories,
-                    TotalCount = response.Content.total_count < 1000 ? response.Content.total_count : 999
+                    TotalCount = totalRepositories
                 };
 
                 return pagedResult;
@@ -108,7 +110,7 @@ namespace GenesisTest.Core.Services
             }
         }
 
-        private static int GetPageCountFromResponse(Refit.ApiResponse<List<Api.PullRequestModels.PullRequestDto>> response)
+        private static int GetPageCountFromResponse<T>(Refit.ApiResponse<T> response) where T : class
         {
             var linkHeader = response.Headers.GetValues("Link").First();
             var links = linkHeader.Split(',');

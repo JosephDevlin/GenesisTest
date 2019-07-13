@@ -14,10 +14,9 @@ namespace GenesisTest.Forms.Droid
         Label = "GenesisTest.Forms.Droid",
         
         Theme = "@style/MyTheme",
-        MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
         LaunchMode = LaunchMode.SingleTask)]
-    public class MainActivity : MvxFormsAppCompatActivity<MvxFormsAndroidSetup<App, FormsApp>, App, FormsApp>
+    public class MainActivity : MvxFormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {

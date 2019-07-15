@@ -1,6 +1,8 @@
 GenesisTest App
 
-Assumptions
+This repo contains my attempt at completing the take home test. The only piece of required functionality I did not get done was to include the search text in both usernames and repositories. I did not have time to get the caching completed to my satisfaction so I did not merge it in but will be happy to discuss during the review. I did not have time to get any unit tests but I built the app to be testable for when I did have time. Thank you in advance for looking my application and I look forward to the review.
+
+ASSUMPTIONS
 
 	- Minimum android version is 5.0
 	- Logging/crash reporting etc not required
